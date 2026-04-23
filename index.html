@@ -22,8 +22,15 @@
 </select>
 <button onclick="addBook()">添加</button>
 
-<h2>📖 列表</h2>
-<div id="list"></div>
+<h2>📕 未读</h2>
+<div id="todo"></div>
+
+<h2>📖 在读</h2>
+<div id="doing"></div>
+
+<h2>✅ 已读</h2>
+<div id="done"></div>
+
 
 <script>
 let books = JSON.parse(localStorage.getItem("books")) || [];
@@ -33,17 +40,35 @@ function save() {
 }
 
 function render() {
-  const list = document.getElementById("list");
-  list.innerHTML = "";
+  const todo = document.getElementById("todo");
+  const doing = document.getElementById("doing");
+  const done = document.getElementById("done");
+
+  todo.innerHTML = "";
+  doing.innerHTML = "";
+  done.innerHTML = "";
+
   books.forEach((book, index) => {
-    list.innerHTML += `
-      <div class="book">
-        <b>${book.name}</b> - ${book.status}
-        <button onclick="removeBook(${index})">删除</button>
-      </div>
-    `;
-  });
+   const item = `
+
+  <div class="book">
+    <b>${book.name}</b>
+    <button onclick="removeBook(${index})">删除</button>
+  </div>
+`;
+
+
+  if (book.status === "未读") {
+    todo.innerHTML += item;
+  } else if (book.status === "在读") {
+    doing.innerHTML += item;
+  } else {
+    done.innerHTML += item;
 }
+
+});
+}
+
 
 function addBook() {
   const name = document.getElementById("name").value;
@@ -53,6 +78,7 @@ function addBook() {
   books.push({ name, status });
   save();
   render();
+  document.getElementById("name").value = "";
 }
 
 function removeBook(index) {
