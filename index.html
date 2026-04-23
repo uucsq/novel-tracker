@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <title>小说记录</title>
+  <style>
+    body { font-family: Arial; padding: 20px; }
+    input, select { margin: 5px; padding: 5px; }
+    .book { margin: 10px 0; padding: 10px; border: 1px solid #ccc; }
+  </style>
+</head>
+<body>
+
+<h1>📚 我的小说记录</h1>
+
+<input id="name" placeholder="小说名称">
+<select id="status">
+  <option value="未读">未读</option>
+  <option value="在读">在读</option>
+  <option value="已读">已读</option>
+</select>
+<button onclick="addBook()">添加</button>
+
+<h2>📖 列表</h2>
+<div id="list"></div>
+
+<script>
+let books = JSON.parse(localStorage.getItem("books")) || [];
+
+function save() {
+  localStorage.setItem("books", JSON.stringify(books));
+}
+
+function render() {
+  const list = document.getElementById("list");
+  list.innerHTML = "";
+  books.forEach((book, index) => {
+    list.innerHTML += `
+      <div class="book">
+        <b>${book.name}</b> - ${book.status}
+        <button onclick="removeBook(${index})">删除</button>
+      </div>
+    `;
+  });
+}
+
+function addBook() {
+  const name = document.getElementById("name").value;
+  const status = document.getElementById("status").value;
+  if (!name) return;
+
+  books.push({ name, status });
+  save();
+  render();
+}
+
+function removeBook(index) {
+  books.splice(index, 1);
+  save();
+  render();
+}
+
+render();
+</script>
+
+</body>
+</html>
